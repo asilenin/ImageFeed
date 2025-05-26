@@ -24,19 +24,19 @@ extension ImagesListViewController {
             return
         }
         
-        cell.CellImage.image = image
-        cell.DateLabel.text = dateFormatter.string(from: Date())
+        cell.cellImage.image = image
+        cell.dateLabel.text = dateFormatter.string(from: Date())
         
         let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
-        cell.LikeButton.setImage(likeImage, for: .normal)
+        cell.likeButton.setImage(likeImage, for: .normal)
     }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -47,7 +47,6 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         configCell(for: imageListCell, with: indexPath)
-        
         return imageListCell
     }
 }
