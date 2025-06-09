@@ -200,6 +200,35 @@
             </objects>
             <point key="canvasLocation" x="5.7971014492753632" y="46.875"/>
         </scene>
+        <!--Single Image View Controller-->
+        <scene sceneID="57T-j8-CDT">
+            <objects>
+                <viewController id="4pW-uW-TjW" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jN7-Fg-83M">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="g7G-LA-PwE">
+                                <rect key="frame" x="0.0" y="96" width="414" height="732"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="iJP-Wq-S16"/>
+                        <color key="backgroundColor" name="YP Black (iOS)"/>
+                        <constraints>
+                            <constraint firstItem="iJP-Wq-S16" firstAttribute="trailing" secondItem="g7G-LA-PwE" secondAttribute="trailing" id="0t8-Rb-6Cc"/>
+                            <constraint firstItem="iJP-Wq-S16" firstAttribute="bottom" secondItem="g7G-LA-PwE" secondAttribute="bottom" id="Hes-gP-GJr"/>
+                            <constraint firstItem="g7G-LA-PwE" firstAttribute="top" secondItem="iJP-Wq-S16" secondAttribute="top" id="VlV-1Z-kN6"/>
+                            <constraint firstItem="g7G-LA-PwE" firstAttribute="leading" secondItem="iJP-Wq-S16" secondAttribute="leading" id="XwG-Vy-GAP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="IamgeView" destination="g7G-LA-PwE" id="7nI-Z3-QYc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="THA-I8-qse" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-931" y="-1110"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="lDN-WW-kfC">
             <objects>
