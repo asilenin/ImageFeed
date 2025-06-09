@@ -73,6 +73,7 @@
                                             <outlet property="CellImage" destination="W7f-8D-nVO" id="uhl-CZ-5oT"/>
                                             <outlet property="DateLabel" destination="Uwm-Op-BsT" id="bBd-io-T6O"/>
                                             <outlet property="LikeButton" destination="S4o-cY-2xE" id="fYA-Fj-FN2"/>
+                                            <segue destination="4pW-uW-TjW" kind="show" id="q4B-mc-WHS"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -108,9 +109,10 @@
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="afr-hW-LAW">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" name="YP Black (iOS)"/>
-                        <color key="tintColor" name="YP White (iOS)"/>
-                        <tabBarAppearance key="standardAppearance"/>
+                        <color key="backgroundColor" name="YP Background (iOS)"/>
+                        <tabBarAppearance key="standardAppearance">
+                            <color key="backgroundColor" name="YP Black (iOS)"/>
+                        </tabBarAppearance>
                     </tabBar>
                     <connections>
                         <segue destination="JDB-6i-0uc" kind="relationship" relationship="viewControllers" id="Lwo-B9-X91"/>
@@ -209,7 +211,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="g7G-LA-PwE">
-                                <rect key="frame" x="0.0" y="96" width="414" height="732"/>
+                                <rect key="frame" x="0.0" y="140" width="414" height="639"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="iJP-Wq-S16"/>
@@ -221,19 +223,20 @@
                             <constraint firstItem="g7G-LA-PwE" firstAttribute="leading" secondItem="iJP-Wq-S16" secondAttribute="leading" id="XwG-Vy-GAP"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Uhs-e6-6Ku"/>
                     <connections>
-                        <outlet property="IamgeView" destination="g7G-LA-PwE" id="7nI-Z3-QYc"/>
+                        <outlet property="imageView" destination="g7G-LA-PwE" id="0y7-Gp-5GO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="THA-I8-qse" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-931" y="-1110"/>
+            <point key="canvasLocation" x="1820" y="-662"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="lDN-WW-kfC">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JDB-6i-0uc" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="ImageListActive" id="awl-Fi-Ntx"/>
+                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="awl-Fi-Ntx"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="tEK-eX-FMJ">
                         <rect key="frame" x="0.0" y="96" width="414" height="44"/>
@@ -258,9 +261,9 @@
     <resources>
         <image name="0" width="533.33331298828125" height="353"/>
         <image name="Active" width="44" height="44"/>
-        <image name="ImageListActive" width="75" height="49"/>
         <image name="Userpic" width="70" height="70"/>
         <image name="logout" width="20" height="22"/>
+        <image name="tab_editorial_active" width="75" height="49"/>
         <image name="tab_profile_active" width="30" height="30"/>
         <namedColor name="Color">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -2,12 +2,14 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
+    static let reuseIdentifier = "ImagesListCell"
+    
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
     
-    static let reuseIdentifier = "ImagesListCell"
     
+/*
     //gradient
         private let gradientHeight: CGFloat = 30
         private var gradientLayer: CAGradientLayer?
@@ -37,11 +39,11 @@ final class ImagesListCell: UITableViewCell {
             cellImage.layer.addSublayer(Gradient)
             gradientLayer = Gradient
         }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         gradientLayer?.removeFromSuperlayer()
         gradientLayer = nil
     }
+     */
     
 }
