@@ -73,7 +73,6 @@
                                             <outlet property="CellImage" destination="W7f-8D-nVO" id="uhl-CZ-5oT"/>
                                             <outlet property="DateLabel" destination="Uwm-Op-BsT" id="bBd-io-T6O"/>
                                             <outlet property="LikeButton" destination="S4o-cY-2xE" id="fYA-Fj-FN2"/>
-                                            <segue destination="4pW-uW-TjW" kind="show" id="q4B-mc-WHS"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -96,6 +95,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="Ip5-G1-A8c" id="vQf-pa-abZ"/>
+                        <segue destination="4pW-uW-TjW" kind="show" identifier="ShowSingleImage" id="ul2-Ad-SUr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

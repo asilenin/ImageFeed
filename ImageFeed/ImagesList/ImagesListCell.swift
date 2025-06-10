@@ -9,7 +9,7 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     
     
-/*
+
     //gradient
         private let gradientHeight: CGFloat = 30
         private var gradientLayer: CAGradientLayer?
@@ -44,6 +44,6 @@ final class ImagesListCell: UITableViewCell {
         gradientLayer?.removeFromSuperlayer()
         gradientLayer = nil
     }
-     */
+    
     
 }
