@@ -1,7 +1,6 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-    
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     @IBOutlet private var tableView: UITableView!
@@ -33,8 +32,6 @@ final class ImagesListViewController: UIViewController {
             }
 
             let image = UIImage(named: photosName[indexPath.row])
-            //_ = viewController.view // CRASH FIXED !?
-            //viewController.imageView.image = image
             viewController.image = image
         } else {
             super.prepare(for: segue, sender: sender)
@@ -96,6 +93,4 @@ extension ImagesListViewController: UITableViewDelegate {
         let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         return cellHeight
     }
-    
 }
-
