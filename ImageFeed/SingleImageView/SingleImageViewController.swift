@@ -10,8 +10,8 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet var imageView: UIImageView!
+    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var scrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +23,7 @@ final class SingleImageViewController: UIViewController {
         imageView.frame.size = image.size
         rescaleAndCenterImageInScrollView(image: image)
     }
+    
     @IBAction func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -36,13 +37,6 @@ final class SingleImageViewController: UIViewController {
         present(share, animated: true, completion: nil)
     }
     
-}
-
-extension SingleImageViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        imageView
-    }
-
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -51,12 +45,19 @@ extension SingleImageViewController: UIScrollViewDelegate {
         let imageSize = image.size
         let hScale = visibleRectSize.width / imageSize.width
         let vScale = visibleRectSize.height / imageSize.height
-        let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
+        let scale = max(minZoomScale, min(maxZoomScale, max(hScale, vScale)))
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
         let newContentSize = scrollView.contentSize
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
+    
+}
+
+extension SingleImageViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        imageView
     }
 }

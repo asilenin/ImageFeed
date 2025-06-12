@@ -215,7 +215,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="g7G-LA-PwE">
-                                        <rect key="frame" x="20" y="20" width="318" height="314"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="318" height="314"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
@@ -253,14 +253,14 @@
                         <viewLayoutGuide key="safeArea" id="iJP-Wq-S16"/>
                         <color key="backgroundColor" name="YP Black (iOS)"/>
                         <constraints>
-                            <constraint firstItem="iJP-Wq-S16" firstAttribute="trailing" secondItem="GoN-EZ-Obc" secondAttribute="trailing" id="9Er-p8-T8h"/>
+                            <constraint firstAttribute="trailing" secondItem="GoN-EZ-Obc" secondAttribute="trailing" id="9Er-p8-T8h"/>
                             <constraint firstAttribute="bottom" secondItem="GoN-EZ-Obc" secondAttribute="bottom" id="Byf-eT-anA"/>
                             <constraint firstItem="XAK-yW-c4Y" firstAttribute="leading" secondItem="iJP-Wq-S16" secondAttribute="leading" constant="8" id="Drz-bu-LMx"/>
                             <constraint firstItem="GoN-EZ-Obc" firstAttribute="top" secondItem="jN7-Fg-83M" secondAttribute="top" id="HC2-6H-wvh"/>
                             <constraint firstItem="iJP-Wq-S16" firstAttribute="bottom" secondItem="Fwg-pO-36K" secondAttribute="bottom" constant="17" id="WWk-Bb-9GP"/>
                             <constraint firstItem="Fwg-pO-36K" firstAttribute="centerX" secondItem="iJP-Wq-S16" secondAttribute="centerX" id="fIr-EK-MxA"/>
                             <constraint firstItem="XAK-yW-c4Y" firstAttribute="top" secondItem="iJP-Wq-S16" secondAttribute="top" constant="8" id="g6p-0z-r41"/>
-                            <constraint firstItem="GoN-EZ-Obc" firstAttribute="leading" secondItem="iJP-Wq-S16" secondAttribute="leading" id="w1c-Mh-fui"/>
+                            <constraint firstItem="GoN-EZ-Obc" firstAttribute="leading" secondItem="jN7-Fg-83M" secondAttribute="leading" id="w1c-Mh-fui"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Uhs-e6-6Ku"/>
