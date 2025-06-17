@@ -9,21 +9,29 @@ final class ProfileViewController: UIViewController {
     private var loginNameLabel = UILabel()
     private var descriptionLabel = UILabel()
     
+    private let mockName = "Екатерина Новикова"
+    private let mockLoginName = "@ekaterina_novikova"
+    private let mockDescriptionLabel = "Hello, world!"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupAvatarImageView()
-        setupLogoutButton()
-        setupNameLabel()
-        setupLoginNameLabel()
-        setupDescriptionLabel()
+        setupUIObjects()
         setupConstraints()
-        
     }
     
     private func setupView() {
         view.contentMode = .scaleToFill
         view.backgroundColor = UIColor(named: "YP Black (iOS)")
+    }
+    
+    // SETUP UI OBJECTS:
+    private func setupUIObjects() {
+        setupAvatarImageView()
+        setupLogoutButton()
+        setupNameLabel()
+        setupLoginNameLabel()
+        setupDescriptionLabel()
     }
     
     private func setupAvatarImageView() {
@@ -50,7 +58,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameLabel() {
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = mockName
         nameLabel.textColor = UIColor(named: "YP White (iOS)")
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.contentMode = .left
@@ -59,7 +67,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginNameLabel() {
-        loginNameLabel.text = "@ekaterina_nov"
+        loginNameLabel.text = mockLoginName
         loginNameLabel.textColor = UIColor(named: "YP Gray (iOS)")
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         loginNameLabel.contentMode = .left
@@ -68,7 +76,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionLabel() {
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = mockDescriptionLabel
         descriptionLabel.textColor = UIColor(named: "YP White (iOS)")
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.contentMode = .left
@@ -76,29 +84,61 @@ final class ProfileViewController: UIViewController {
         view.addSubview(descriptionLabel)
     }
     
-    @objc
-    private func didTapLogoutButton(){}
     
     
-    private func setupConstraints() {
+    // SETUP CONTRAINTS:
+    private func setupConstraints(){
+        setupConstraintsAvatarImage()
+        setupConstraintsLogoutButton()
+        setupConstraintsNameLabel()
+        setupConstraintsLoginNameLabel()
+        setupConstraintsDescriptionLabel()
+        
+    }
+    
+    private func setupConstraintsAvatarImage() {
         NSLayoutConstraint.activate([
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             avatarImageView.heightAnchor.constraint(equalTo: avatarImageView.widthAnchor),
             avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+        ])
+    }
+    
+    private func setupConstraintsLogoutButton() {
+        NSLayoutConstraint.activate([
             logoutButton.heightAnchor.constraint(equalToConstant: 44),
             logoutButton.widthAnchor.constraint(equalToConstant: 44),
             logoutButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
             logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+        ])
+    }
+    
+    private func setupConstraintsNameLabel() {
+        NSLayoutConstraint.activate([
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 16),
             nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
             nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8),
+        ])
+    }
+    
+    private func setupConstraintsLoginNameLabel() {
+        NSLayoutConstraint.activate([
             loginNameLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             loginNameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+        ])
+    }
+    
+    private func setupConstraintsDescriptionLabel() {
+        NSLayoutConstraint.activate([
             descriptionLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             descriptionLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
         ])
     }
+    
+    // TODO:
+    @objc
+    private func didTapLogoutButton(){}
 }
