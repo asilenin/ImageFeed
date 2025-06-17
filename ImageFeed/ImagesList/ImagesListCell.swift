@@ -2,46 +2,48 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
-    @IBOutlet weak var CellImage: UIImageView!
-    @IBOutlet weak var LikeButton: UIButton!
-    @IBOutlet weak var DateLabel: UILabel!
-    
     static let reuseIdentifier = "ImagesListCell"
     
-    //gradient
+    @IBOutlet weak var cellImage: UIImageView!
+    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var dateLabel: UILabel!
+    
     private let gradientHeight: CGFloat = 30
     private var gradientLayer: CAGradientLayer?
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        gradientLayer?.removeFromSuperlayer()
-        
-        guard CellImage.bounds.height > 0 else { return }
-        
-        let ProperFromAssetColor = UIColor(named: "YP Black (iOS)") ?? .black
-        
-        let Gradient = CAGradientLayer()
-        Gradient.frame = CGRect(
-            x: 0,
-            y: CellImage.bounds.height - gradientHeight,
-            width: CellImage.bounds.width,
-            height: gradientHeight
-        )
-        Gradient.colors = [
-            UIColor.clear.cgColor,
-            ProperFromAssetColor.withAlphaComponent(0.5).cgColor
-        ]
-        Gradient.locations = [0.0, 1.0]
-        
-        CellImage.layer.addSublayer(Gradient)
-        gradientLayer = Gradient
+        applyGradientToImage()
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         gradientLayer?.removeFromSuperlayer()
         gradientLayer = nil
     }
     
+    private func applyGradientToImage() {
+        
+        gradientLayer?.removeFromSuperlayer()
+        
+        guard cellImage.bounds.height > 0 else { return }
+
+        let gradientColor = UIColor(named: "YP Black (iOS)") ?? .black
+        
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(
+            x: 0,
+            y: cellImage.bounds.height - gradientHeight,
+            width: cellImage.bounds.width,
+            height: gradientHeight
+        )
+        gradient.colors = [
+            UIColor.clear.cgColor,
+            gradientColor.withAlphaComponent(0.5).cgColor
+        ]
+        gradient.locations = [0.0, 1.0]
+
+        cellImage.layer.addSublayer(gradient)
+        gradientLayer = gradient
+    }
 }
