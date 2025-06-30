@@ -17,17 +17,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="fpM-n3-Qpb">
-                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="GWp-d4-ViB">
+                                <rect key="frame" x="159" y="387" width="75" height="78"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Background (iOS)"/>
                         <constraints>
-                            <constraint firstItem="fpM-n3-Qpb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GQd-DB-PjW"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fpM-n3-Qpb" secondAttribute="trailing" id="c2q-JB-PaN"/>
-                            <constraint firstItem="fpM-n3-Qpb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oy3-pH-Tmg"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fpM-n3-Qpb" secondAttribute="bottom" id="qFk-t2-GK0"/>
+                            <constraint firstItem="GWp-d4-ViB" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="BhT-Dr-86c"/>
+                            <constraint firstItem="GWp-d4-ViB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="wv4-2x-D0W"/>
                         </constraints>
                     </view>
                 </viewController>
