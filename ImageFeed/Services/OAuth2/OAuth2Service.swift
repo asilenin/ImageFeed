@@ -1,29 +1,35 @@
 import UIKit
 import WebKit
 
-
+enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
+}
 
 final class OAuth2Service {
     static let shared = OAuth2Service()
     private let tokenStorage = OAuth2TokenStorage()
-    
     private init() {}
-    
     private var task: URLSessionTask?
-    private let decoder = JSONDecoder()
+    
+    private let decoder: JSONDecoder = {        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        return decoder
+    }()
     
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
-        
         task?.cancel()
-        
         let request = makeOAuth2TokenRequest(code: code)
-        
         task = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    print("Error: \(error)")
+                    print("❌ Error: \(error)")
                     DispatchQueue.main.async {
                         completion(.failure(error))
                     }
@@ -31,7 +37,7 @@ final class OAuth2Service {
                 }
                 
                 guard let data = data else {
-                    print("Error: empty data")
+                    print("❌ Empty data")
                     DispatchQueue.main.async {
                         completion(.failure(NetworkError.noData))
                     }
@@ -39,25 +45,23 @@ final class OAuth2Service {
                 }
                 
                 do {
-                    let tokenResponse = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    let tokenResponse = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
                     let token = tokenResponse.accessToken
                     self.tokenStorage.token = token
                     DispatchQueue.main.async {
                         completion(.success(token))
                     }
                 } catch {
-                    let errorMessage = "Encode/Decode error in JSON: \(error.localizedDescription)"
-                    completion(.failure(NetworkError.decodingError(message: errorMessage)))
+                    completion(.failure(NetworkError.decodingError(message: "❌ Encode/Decode error in JSON: \(error.localizedDescription)")))
                 }
             }
         }
-        
         task?.resume()
     }
     
     func makeOAuth2TokenRequest(code: String) -> URLRequest {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashTokenURLString) else {
-            preconditionFailure("Invalid WebViewConstants.unsplashTokenURLString")
+            preconditionFailure("❌ Invalid WebViewConstants.unsplashTokenURLString")
         }
         
         urlComponents.queryItems = [
@@ -69,14 +73,12 @@ final class OAuth2Service {
         ]
         
         guard let url = urlComponents.url else {
-            preconditionFailure("Invalid urlComponents.url")
+            preconditionFailure("❌ Invalid urlComponents.url")
         }
         
         var request = URLRequest(url: url)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
+        request.httpMethod = HTTPMethod.post.rawValue
         return request
-        
-        
     }
 }

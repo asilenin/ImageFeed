@@ -5,12 +5,8 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
-    
-    
     weak var delegate: AuthViewControllerDelegate?
-    
     private let oauth2Service = OAuth2Service.shared
-    
     private let showWebViewSegueIdentifier = "ShowWebView"
     
     override func viewDidLoad() {
@@ -19,23 +15,18 @@ final class AuthViewController: UIViewController {
     }
     
     private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button") // 1
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button") // 2
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil) // 3
-        navigationItem.backBarButtonItem?.tintColor = UIColor(named: "YP Black (iOS)") // 4
+        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .ypBlackIOS
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueIdentifier {
-            guard
-                let webViewViewController = segue.destination as? WebViewViewController
-            else {
-                preconditionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
-            }
-            webViewViewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
+        guard segue.identifier == showWebViewSegueIdentifier,
+              let webViewViewController = segue.destination as? WebViewViewController else {
+            return super.prepare(for: segue, sender: sender)
         }
+        webViewViewController.delegate = self
     }
     
     @objc private func didTapLoginButton() {
@@ -47,7 +38,6 @@ final class AuthViewController: UIViewController {
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
-    
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
     }
@@ -59,13 +49,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func fetchOAuthToken(code: String){
         OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
             DispatchQueue.main.async {
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success:
                     self.delegate?.authViewController(self, didAuthenticateWithCode: code)
                     self.dismiss(animated: true)
                 case .failure(let error):
-                    print("Authorization error: \(error)")
+                    print("❌ Authorization error: \(error)")
                 }
             }
         }

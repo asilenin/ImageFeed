@@ -13,26 +13,41 @@ extension URLSession {
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
-        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in  // 2
+        let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
                 completion(result)
             }
         }
         
         let task = dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
-                    fulfillCompletionOnTheMainThread(.success(data)) // 3
-                } else {
-                    fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode))) // 4
-                }
-            } else if let error = error {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error))) // 5
-            } else {
-                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError)) // 6
+            if let error = error {
+                print("❌ URL request error: \(error.localizedDescription)")
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
+                return
             }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ Invalid URLSession response")
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
+                return
+            }
+            
+            let statusCode = httpResponse.statusCode
+            
+            guard (200..<300).contains(statusCode) else {
+                print("❌ HTTP error: status code \(statusCode)")
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
+                return
+            }
+            
+            guard let data = data else {
+                print("❌ No data received")
+                fulfillCompletionOnTheMainThread(.failure(NetworkError.noData))
+                return
+            }
+            
+            fulfillCompletionOnTheMainThread(.success(data))
         })
-        
         return task
     }
 }

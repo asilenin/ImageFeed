@@ -1,14 +1,12 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    
     private var avatarImage = UIImage()
     private var avatarImageView = UIImageView()
     private var logoutButton = UIButton()
     private var nameLabel = UILabel()
     private var loginNameLabel = UILabel()
     private var descriptionLabel = UILabel()
-    
     private let mockName = "Екатерина Новикова"
     private let mockLoginName = "@ekaterina_novikova"
     private let mockDescriptionLabel = "Hello, world!"
@@ -46,8 +44,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupLogoutButton() {
         let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ??
-                    UIImage(systemName: "arrow.backward")!
-        
+        UIImage(systemName: "arrow.backward")!
         logoutButton = UIButton(type: .custom)
         logoutButton.setImage(image, for: .normal)
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
@@ -59,7 +56,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupNameLabel() {
         nameLabel.text = mockName
-        nameLabel.textColor = UIColor(named: "YP White (iOS)")
+        nameLabel.textColor = .ypWhiteIOS
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.contentMode = .left
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +65,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupLoginNameLabel() {
         loginNameLabel.text = mockLoginName
-        loginNameLabel.textColor = UIColor(named: "YP Gray (iOS)")
+        loginNameLabel.textColor = .ypGrayIOS
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         loginNameLabel.contentMode = .left
         loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -77,14 +74,12 @@ final class ProfileViewController: UIViewController {
     
     private func setupDescriptionLabel() {
         descriptionLabel.text = mockDescriptionLabel
-        descriptionLabel.textColor = UIColor(named: "YP White (iOS)")
+        descriptionLabel.textColor = .ypWhiteIOS
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.contentMode = .left
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
     }
-    
-    
     
     // SETUP CONTRAINTS:
     private func setupConstraints(){
