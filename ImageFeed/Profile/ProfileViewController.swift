@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     private var avatarImage = UIImage()
@@ -7,20 +8,38 @@ final class ProfileViewController: UIViewController {
     private var nameLabel = UILabel()
     private var loginNameLabel = UILabel()
     private var descriptionLabel = UILabel()
+    
+    
     private let mockName = "Екатерина Новикова"
     private let mockLoginName = "@ekaterina_novikova"
     private let mockDescriptionLabel = "Hello, world!"
+    
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupUIObjects()
         setupConstraints()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     private func setupView() {
         view.contentMode = .scaleToFill
-        view.backgroundColor = UIColor(named: "YP Black (iOS)")
+        view.backgroundColor = UIColor(resource: .ypBlackIOS)
     }
     
     // SETUP UI OBJECTS:
@@ -33,7 +52,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupAvatarImageView() {
-        avatarImage = UIImage(named: "Userpic") ?? UIImage(systemName: "person.crop.circle.fill")!
+        avatarImage = UIImage(resource: .userpic) /*named: "Userpic") ?? UIImage(systemName: "person.crop.circle.fill")!*/
         avatarImageView = UIImageView(image: avatarImage)
         avatarImageView.layer.masksToBounds = false
         avatarImageView.layer.cornerRadius = 35
@@ -131,6 +150,14 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
         ])
+    }
+    
+    private func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
     }
     
     // TODO:

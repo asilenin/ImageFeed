@@ -1,20 +1,18 @@
 import UIKit
 import WebKit
 
-enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case put = "PUT"
-    case delete = "DELETE"
-}
-
 final class OAuth2Service {
     static let shared = OAuth2Service()
     private let tokenStorage = OAuth2TokenStorage()
     private init() {}
-    private var task: URLSessionTask?
     
-    private let decoder: JSONDecoder = {        
+    
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    //TODO: currentTask
+    
+    private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
@@ -24,9 +22,20 @@ final class OAuth2Service {
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
         task?.cancel()
-        let request = makeOAuth2TokenRequest(code: code)
-        task = URLSession.shared.dataTask(with: request) { data, response, error in
+        lastCode = code
+        
+        guard let request = auth2TokenRequest(code: code)
+        else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print("❌ Error: \(error)")
@@ -39,7 +48,7 @@ final class OAuth2Service {
                 guard let data = data else {
                     print("❌ Empty data")
                     DispatchQueue.main.async {
-                        completion(.failure(NetworkError.noData))
+                        completion(.failure(NetworkError.noData(message: "no data")))
                     }
                     return
                 }
@@ -54,12 +63,18 @@ final class OAuth2Service {
                 } catch {
                     completion(.failure(NetworkError.decodingError(message: "❌ Encode/Decode error in JSON: \(error.localizedDescription)")))
                 }
+                self.task = nil
+                self.lastCode = nil
             }
         }
-        task?.resume()
+        self.task = task
+        task.resume()
     }
     
-    func makeOAuth2TokenRequest(code: String) -> URLRequest {
+}
+
+extension OAuth2Service {
+    func auth2TokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashTokenURLString) else {
             preconditionFailure("❌ Invalid WebViewConstants.unsplashTokenURLString")
         }
