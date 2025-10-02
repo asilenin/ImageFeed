@@ -21,9 +21,8 @@ final class ProfileService {
             switch result {
             case .success(let response):
                 let profile = Profile(from: response)
-                //let profile = Profile(username: response.username, name: "\(response.firstName) \(response.lastName ?? "")", loginName: "@\(response.username)", bio: response.bio ?? "")
-                //completion(.success(profile))
                 self.profile = profile
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
                 completion(.success(profile))
             case .failure(let error):
                 print("❌ [ProfileService][fetchProfile]: Error \(error.localizedDescription)")
