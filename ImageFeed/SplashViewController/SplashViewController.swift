@@ -1,12 +1,8 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    //private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
-    //private let oauth2Service = OAuth2Service.shared
     private let oauth2TokenStorage = OAuth2TokenStorage.shared
-    //private let profileService = ProfileService()
     private let profileService = ProfileService.shared
-    //private let storage = OAuth2TokenStorage()
     
     
     private var imageView: UIImageView!
@@ -23,7 +19,6 @@ final class SplashViewController: UIViewController {
         if oauth2TokenStorage.token != nil {
             fetchProfile()
         } else {
-            //performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
             presentAuthViewController()
         }
     }
@@ -65,25 +60,6 @@ final class SplashViewController: UIViewController {
         window.makeKeyAndVisible()
     }
 }
-/*
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else {
-                assertionFailure("❌ [SplashViewController] prepare: Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
-                return
-            }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
- */
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {

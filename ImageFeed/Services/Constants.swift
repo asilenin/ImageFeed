@@ -31,7 +31,6 @@ enum OtherConstants {
     static let floatComparisonEpsilon: Double = 0.0001
 }
 
-
 enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
