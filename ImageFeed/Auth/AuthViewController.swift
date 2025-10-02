@@ -9,16 +9,13 @@ final class AuthViewController: UIViewController {
     private var loginButton = UIButton()
     
     private let showWebViewSegueIdentifier = "ShowWebView"
-    
     private var isFetchingToken = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupView()
         setupUIObjects()
         setupConstraints()
-        
         configureBackButton()
     }
     
@@ -27,13 +24,11 @@ final class AuthViewController: UIViewController {
         view.backgroundColor = UIColor(resource: .ypBlackIOS)
     }
     
-    
     // SETUP UI OBJECTS:
     private func setupUIObjects(){
         setupLogoImageView()
         setupLoginButton()
     }
-    
     
     private func setupLogoImageView() {
         logoImage = UIImage(resource: .authIclon)
@@ -42,7 +37,6 @@ final class AuthViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
     }
-    
     
     private func setupLoginButton() {
         loginButton = UIButton(type: .system)
@@ -74,8 +68,8 @@ final class AuthViewController: UIViewController {
     }
     
     private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
+        navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .navBackButton)
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .navBackButton)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = .ypBlackIOS
     }
@@ -93,7 +87,9 @@ final class AuthViewController: UIViewController {
         guard !isFetchingToken else { return }
         let webViewViewController = WebViewViewController()
         webViewViewController.delegate = self
-        navigationController?.pushViewController(webViewViewController, animated: true)
+        let navigationController = UINavigationController(rootViewController: webViewViewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -116,7 +112,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 case .success(let code):
                     self.delegate?.authViewController(self, didAuthenticateWithCode: code)
                 case .failure(let error):
-                    print("❌ Unable to get token: \(error)")
+                    print("❌ [fetchOAuthToken]: Unable to get token: \(error)")
                     let alert = UIAlertController(
                         title: "Что-то пошло не так(",
                         message: "Не удалось войти в систему",
@@ -131,18 +127,18 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
         
     private func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
+        oauth2Service.fetchOAuthToken(code) { [weak self] result in
             
             DispatchQueue.main.async {
                 UIBlockingProgressHUD.dismiss()
                 guard let self else { return }
                 self.isFetchingToken = false
                 switch result {
-                case .success(let token):
-                    completion(.success(token))
+                case .success(let code):
+                    completion(.success(code))
                 case .failure(let error):
                     completion(.failure(error))
-                    print("❌ Authorization error: \(error)")
+                    print("❌ [fetchOAuthToken]: Authorization error: \(error)")
                 }
             }
         }

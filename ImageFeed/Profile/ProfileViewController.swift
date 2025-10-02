@@ -9,12 +9,6 @@ final class ProfileViewController: UIViewController {
     private var loginNameLabel = UILabel()
     private var descriptionLabel = UILabel()
     
-    
-    private let mockName = "Екатерина Новикова"
-    private let mockLoginName = "@ekaterina_novikova"
-    private let mockDescriptionLabel = "Hello, world!"
-    
-    
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
@@ -25,6 +19,10 @@ final class ProfileViewController: UIViewController {
         setupUIObjects()
         setupConstraints()
         
+        if let profile = ProfileService.shared.profile {
+            updateProfileDetails(profile: profile)
+        }
+        
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ProfileImageService.didChangeNotification,
@@ -34,7 +32,41 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateAvatar()
             }
-        updateAvatar()
+        
+        self.updateAvatar()
+    }
+    
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { avatarImageView.image = UIImage(named: "avatar")
+            return }
+        
+        let placeholder = UIImage(named: "avatar")
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: placeholder,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage
+            ]
+        )
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
     }
     
     private func setupView() {
@@ -52,11 +84,9 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupAvatarImageView() {
-        avatarImage = UIImage(resource: .userpic) /*named: "Userpic") ?? UIImage(systemName: "person.crop.circle.fill")!*/
-        avatarImageView = UIImageView(image: avatarImage)
-        avatarImageView.layer.masksToBounds = false
+        avatarImageView.layer.masksToBounds = true
         avatarImageView.layer.cornerRadius = 35
-        avatarImageView.contentMode = .scaleAspectFit
+        avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(avatarImageView)
     }
@@ -74,7 +104,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameLabel() {
-        nameLabel.text = mockName
         nameLabel.textColor = .ypWhiteIOS
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.contentMode = .left
@@ -83,7 +112,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginNameLabel() {
-        loginNameLabel.text = mockLoginName
         loginNameLabel.textColor = .ypGrayIOS
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         loginNameLabel.contentMode = .left
@@ -92,7 +120,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionLabel() {
-        descriptionLabel.text = mockDescriptionLabel
         descriptionLabel.textColor = .ypWhiteIOS
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.contentMode = .left
@@ -151,14 +178,7 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
         ])
     }
-    
-    private func updateAvatar() {                                   // 8
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
-    }
+
     
     // TODO:
     @objc

@@ -22,7 +22,7 @@ final class ImagesListCell: UITableViewCell {
     private func applyGradientToImage() {
         gradientLayer?.removeFromSuperlayer()
         guard cellImage.bounds.height > 0 else { return }
-        let gradientColor = UIColor(named: "YP Black (iOS)") ?? .black
+        let gradientColor = UIColor(resource: .ypBlackIOS)
         let gradient = CAGradientLayer()
         gradient.frame = CGRect(
             x: 0,

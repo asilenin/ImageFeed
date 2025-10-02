@@ -1,12 +1,15 @@
 import UIKit
 
 enum WebViewConstants {
+    static let defaultBaseURL = "https://api.unsplash.com"
     static let unsplashBaseURLString = "https://unsplash.com"
     static let unsplashAPIURLString = "https://unsplash.com"
     static let unsplashAuthorizeURLString = unsplashBaseURLString + "/oauth/authorize"
     static let unsplashTokenURLString = unsplashBaseURLString + "/oauth/token"
     static let unsplashProfileURLString = unsplashAPIURLString + "/me"
+    static let unsplashProfileURLString2 = defaultBaseURL + "/me"
     static let unsplashProfileImageURLString = unsplashAPIURLString + "/users"
+    static let unsplashProfileImageURLString2 = defaultBaseURL + "/users"
 }
 
 enum Constants {

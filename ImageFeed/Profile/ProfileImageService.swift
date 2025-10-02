@@ -15,34 +15,25 @@ private struct UserResult: Codable {
 
 
 final class ProfileImageService{
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
     static let shared = ProfileImageService()
+    private init() {}
     
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
     
-    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
-    private init() {}
-    
-    
-    /*func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void){
-        
-        NotificationCenter.default                                     // 1
-            .post(                                                     // 2
-                name: ProfileImageService.didChangeNotification,       // 3
-                object: self,                                          // 4
-                userInfo: ["URL": profileImageURL]                     // 5
-            )
-    }*/
     
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         task?.cancel()
         guard let request = makeProfileImageRequest(username: username) else {
-            print("❌ Error: fetchProfileImageURL: NetworkError - invalidURL")
-            completion(.failure(NetworkError.invalidURL(message: "❌ Error: Неправильный URL")))
+            let message = "❌ [fetchProfileImageURL]: Invalid URL"
+            print(message)
+            completion(.failure(NetworkError.invalidURL(message: message)))
             return
         }
-        task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        task = URLSession.shared.data(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
             self.task = nil
             switch result {
@@ -57,20 +48,18 @@ final class ProfileImageService{
                     )
                 completion(.success(avatarURL))
             case .failure(let error):
-                print("[fetchProfileImageURL]: Error - \(error.localizedDescription)")
+                print("❌ [fetchProfileImageURL]: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
         task?.resume()
     }
     
-    // MARK: - Private Methods
-    
     private func makeProfileImageRequest(username: String) -> URLRequest? {
-        guard let url = URL(string: "\(WebViewConstants.unsplashProfileImageURLString)/\(username)") else {
-            print("Ошибка: Не удалось создать URL из WebViewConstants.unsplashProfileImageURLString")
+        guard let url = URL(string: "\(WebViewConstants.unsplashProfileImageURLString2)/\(username)") else {
+            print("❌ [makeProfileImageRequest]: Unable to use WebViewConstants.unsplashProfileImageURLString to create URL")
             guard let newURL = URL(string: "https://api.unsplash.com/users/\(username)") else {
-                assertionFailure("Failed to create new URL")
+                assertionFailure("❌ [makeProfileImageRequest]: Failed to create new URL")
                 return URLRequest(url: URL(fileURLWithPath: ""))
             }
             return URLRequest(url: newURL)
@@ -80,7 +69,7 @@ final class ProfileImageService{
         if let token = OAuth2TokenStorage.shared.token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
-            print("Токен не найден")
+            print("❌ [makeProfileImageRequest]: Token not found")
             return nil
         }
         print("URLRequest URL: \(request.url?.absoluteString ?? "nil")")
