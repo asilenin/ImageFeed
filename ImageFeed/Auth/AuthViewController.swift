@@ -1,5 +1,10 @@
 import UIKit
 
+private enum UIConstants {
+    static let loginButtonFont = UIFont.systemFont(ofSize: 17, weight: .bold)
+    static let loginButtonCornerRadius: CGFloat = 16
+}
+
 final class AuthViewController: UIViewController {
     weak var delegate: AuthViewControllerDelegate?
     private let oauth2Service = OAuth2Service.shared
@@ -41,11 +46,11 @@ final class AuthViewController: UIViewController {
     private func setupLoginButton() {
         loginButton = UIButton(type: .system)
         loginButton.setTitle("Войти", for: .normal)
-        loginButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        loginButton.titleLabel?.font = UIConstants.loginButtonFont
         loginButton.setTitleColor(UIColor(resource: .ypBlackIOS), for: .normal)
         loginButton.backgroundColor = UIColor(resource: .ypWhiteIOS)
         loginButton.layer.masksToBounds = true
-        loginButton.layer.cornerRadius = 16
+        loginButton.layer.cornerRadius = UIConstants.loginButtonCornerRadius
         loginButton.contentMode = .scaleToFill
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)

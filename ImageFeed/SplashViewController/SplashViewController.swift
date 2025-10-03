@@ -5,7 +5,7 @@ final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     
     
-    private var imageView: UIImageView!
+    private var imageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()

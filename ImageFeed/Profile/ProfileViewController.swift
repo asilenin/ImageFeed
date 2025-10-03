@@ -92,8 +92,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLogoutButton() {
-        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ??
-        UIImage(systemName: "arrow.backward")!
+        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ?? UIImage(systemName: "arrow.backward") ?? UIImage()
         logoutButton = UIButton(type: .custom)
         logoutButton.setImage(image, for: .normal)
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
