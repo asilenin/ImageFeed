@@ -1,26 +1,34 @@
 import UIKit
 import WebKit
 
-protocol WebViewViewControllerDelegate: AnyObject {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
-}
 
 final class WebViewViewController: UIViewController {
-    @IBOutlet private var webView: WKWebView!
-    @IBOutlet private var progressView: UIProgressView!
     weak var delegate: WebViewViewControllerDelegate?
+    
+    private var webView = WKWebView()
+    private var progressView = UIProgressView()
+    private var backButton = UIBarButtonItem()
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
         webView.navigationDelegate = self
-        
         loadAuthView()
+        setupView()
+        setupUIObjects()
+        setupConstraints()
+        self.updateProgress()
     }
-    
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            preconditionFailure("Invalid WebViewConstants.unsplashAuthorizeURLString")
+            preconditionFailure("❌ [loadAuthView]: Invalid WebViewConstants.unsplashAuthorizeURLString")
         }
         
         urlComponents.queryItems = [
@@ -31,7 +39,7 @@ final class WebViewViewController: UIViewController {
         ]
         
         guard let url = urlComponents.url else {
-            preconditionFailure("Invalid urlComponents.url")
+            preconditionFailure("❌ [loadAuthView]: Invalid urlComponents.url")
         }
         
         let request = URLRequest(url: url)
@@ -39,8 +47,66 @@ final class WebViewViewController: UIViewController {
         updateProgress()
     }
     
-    @IBAction private func didTapBackButton(_ sender: Any?) {
-        delegate?.webViewViewControllerDidCancel(self)
+    private func setupView() {
+        view.contentMode = .scaleToFill
+    }
+    
+    // SETUP UI OBJECTS:
+    private func setupUIObjects(){
+        setupWebView()
+        setupBackButton()
+        setupProgressView()
+    }
+    
+    private func setupWebView() {
+        webView.navigationDelegate = self
+        webView.contentMode = .scaleToFill
+        view.backgroundColor = UIColor(resource: .ypWhiteIOS)
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(webView)
+    }
+    
+    private func setupBackButton() {
+        backButton = UIBarButtonItem(image: UIImage(resource: .navBackButton),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(didTapBackButton))
+        backButton.tintColor = UIColor(resource: .ypBlackIOS)
+        navigationItem.leftBarButtonItem = backButton
+    }
+    
+    private func setupProgressView() {
+        progressView = UIProgressView(progressViewStyle: .default)
+        progressView.progressTintColor = UIColor(resource: .ypBlackIOS)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(progressView)
+    }
+    
+    private func setupConstraints(){
+        setupProgressViewConstraints()
+        setupWebViewConstraints()
+    }
+    
+    private func setupWebViewConstraints(){
+        NSLayoutConstraint.activate([
+            webView.topAnchor.constraint(equalTo: progressView.bottomAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func setupProgressViewConstraints(){
+        NSLayoutConstraint.activate([
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+    }
+    
+    @objc
+    private func didTapBackButton() {
+        dismiss(animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     private var avatarImage = UIImage()
@@ -7,20 +8,70 @@ final class ProfileViewController: UIViewController {
     private var nameLabel = UILabel()
     private var loginNameLabel = UILabel()
     private var descriptionLabel = UILabel()
-    private let mockName = "Екатерина Новикова"
-    private let mockLoginName = "@ekaterina_novikova"
-    private let mockDescriptionLabel = "Hello, world!"
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupUIObjects()
         setupConstraints()
+        
+        if let profile = ProfileService.shared.profile {
+            updateProfileDetails(profile: profile)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        
+        self.updateAvatar()
+    }
+    
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { avatarImageView.image = UIImage(named: "avatar")
+            return }
+        
+        let placeholder = UIImage(named: "avatar")
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: placeholder,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage
+            ]
+        )
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
     }
     
     private func setupView() {
         view.contentMode = .scaleToFill
-        view.backgroundColor = UIColor(named: "YP Black (iOS)")
+        view.backgroundColor = UIColor(resource: .ypBlackIOS)
     }
     
     // SETUP UI OBJECTS:
@@ -33,18 +84,15 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupAvatarImageView() {
-        avatarImage = UIImage(named: "Userpic") ?? UIImage(systemName: "person.crop.circle.fill")!
-        avatarImageView = UIImageView(image: avatarImage)
-        avatarImageView.layer.masksToBounds = false
+        avatarImageView.layer.masksToBounds = true
         avatarImageView.layer.cornerRadius = 35
-        avatarImageView.contentMode = .scaleAspectFit
+        avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(avatarImageView)
     }
     
     private func setupLogoutButton() {
-        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ??
-        UIImage(systemName: "arrow.backward")!
+        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ?? UIImage(systemName: "arrow.backward") ?? UIImage()
         logoutButton = UIButton(type: .custom)
         logoutButton.setImage(image, for: .normal)
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
@@ -55,7 +103,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameLabel() {
-        nameLabel.text = mockName
         nameLabel.textColor = .ypWhiteIOS
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         nameLabel.contentMode = .left
@@ -64,7 +111,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginNameLabel() {
-        loginNameLabel.text = mockLoginName
         loginNameLabel.textColor = .ypGrayIOS
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         loginNameLabel.contentMode = .left
@@ -73,7 +119,6 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionLabel() {
-        descriptionLabel.text = mockDescriptionLabel
         descriptionLabel.textColor = .ypWhiteIOS
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.contentMode = .left
@@ -132,6 +177,7 @@ final class ProfileViewController: UIViewController {
             descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
         ])
     }
+
     
     // TODO:
     @objc
