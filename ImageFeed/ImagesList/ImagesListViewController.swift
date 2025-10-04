@@ -25,7 +25,7 @@ final class ImagesListViewController: UIViewController {
                 let viewController = segue.destination as? SingleImageViewController,
                 let indexPath = sender as? IndexPath
             else {
-                preconditionFailure("Invalid segue destination")
+                preconditionFailure("❌ [prepare]: Invalid segue destination")
             }
             
             let image = UIImage(named: photosName[indexPath.row])
