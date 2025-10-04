@@ -10,8 +10,27 @@ final class AuthViewController: UIViewController {
     private let oauth2Service = OAuth2Service.shared
     
     private var logoImage = UIImage()
-    private var imageView = UIImageView()
-    private var loginButton = UIButton()
+    
+    private var imageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(resource: .authIclon))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var loginButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Войти", for: .normal)
+        button.titleLabel?.font = UIConstants.loginButtonFont
+        button.setTitleColor(UIColor(resource: .ypBlackIOS), for: .normal)
+        button.backgroundColor = UIColor(resource: .ypWhiteIOS)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = UIConstants.loginButtonCornerRadius
+        button.contentMode = .scaleToFill
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
+        return button
+    }()
     
     private let showWebViewSegueIdentifier = "ShowWebView"
     private var isFetchingToken = false
@@ -31,29 +50,7 @@ final class AuthViewController: UIViewController {
     
     // SETUP UI OBJECTS:
     private func setupUIObjects(){
-        setupLogoImageView()
-        setupLoginButton()
-    }
-    
-    private func setupLogoImageView() {
-        logoImage = UIImage(resource: .authIclon)
-        imageView = UIImageView(image: logoImage)
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-    }
-    
-    private func setupLoginButton() {
-        loginButton = UIButton(type: .system)
-        loginButton.setTitle("Войти", for: .normal)
-        loginButton.titleLabel?.font = UIConstants.loginButtonFont
-        loginButton.setTitleColor(UIColor(resource: .ypBlackIOS), for: .normal)
-        loginButton.backgroundColor = UIColor(resource: .ypWhiteIOS)
-        loginButton.layer.masksToBounds = true
-        loginButton.layer.cornerRadius = UIConstants.loginButtonCornerRadius
-        loginButton.contentMode = .scaleToFill
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
         view.addSubview(loginButton)
     }
     
@@ -105,17 +102,20 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         vc.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
             UIBlockingProgressHUD.show()
-            self.isFetchingToken = true
+            isFetchingToken = true
             
-            fetchOAuthToken(code: code){ result in
+            fetchOAuthToken(code: code){ [weak self] result in
+                guard let self else { return }
+                
                 UIBlockingProgressHUD.dismiss()
-                self.isFetchingToken = false
+                isFetchingToken = false
+                
                 switch result {
                 case .success(let code):
-                    self.delegate?.authViewController(self, didAuthenticateWithCode: code)
+                    delegate?.authViewController(self, didAuthenticateWithCode: code)
                 case .failure(let error):
                     print("❌ [fetchOAuthToken]: Unable to get token: \(error)")
                     let alert = UIAlertController(
@@ -124,7 +124,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                         preferredStyle: .alert
                     )
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+                    present(alert, animated: true, completion: nil)
                 }
             }
             

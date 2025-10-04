@@ -33,7 +33,7 @@ final class ProfileImageService{
             return
         }
         task = URLSession.shared.data(for: request) { [weak self] (result: Result<UserResult, Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
             self.task = nil
             switch result {
             case .success(let userResult):

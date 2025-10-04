@@ -5,9 +5,32 @@ import WebKit
 final class WebViewViewController: UIViewController {
     weak var delegate: WebViewViewControllerDelegate?
     
-    private var webView = WKWebView()
-    private var progressView = UIProgressView()
-    private var backButton = UIBarButtonItem()
+    private lazy var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.navigationDelegate = self
+        webView.contentMode = .scaleToFill
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        return webView
+    }()
+    
+    private lazy var progressView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .default)
+        progressView.progressTintColor = UIColor(resource: .ypBlackIOS)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        return progressView
+    }()
+    
+    private lazy var backButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(
+            image: UIImage(resource: .navBackButton),
+            style: .plain,
+            target: self,
+            action: #selector(didTapBackButton)
+        )
+        button.tintColor = UIColor(resource: .ypBlackIOS)
+        return button
+    }()
+    
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     override func viewDidLoad() {
@@ -16,7 +39,7 @@ final class WebViewViewController: UIViewController {
             \.estimatedProgress,
              options: [],
              changeHandler: { [weak self] _, _ in
-                 guard let self = self else { return }
+                 guard let self else { return }
                  self.updateProgress()
              })
         webView.navigationDelegate = self
@@ -53,32 +76,8 @@ final class WebViewViewController: UIViewController {
     
     // SETUP UI OBJECTS:
     private func setupUIObjects(){
-        setupWebView()
-        setupBackButton()
-        setupProgressView()
-    }
-    
-    private func setupWebView() {
-        webView.navigationDelegate = self
-        webView.contentMode = .scaleToFill
-        view.backgroundColor = UIColor(resource: .ypWhiteIOS)
-        webView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webView)
-    }
-    
-    private func setupBackButton() {
-        backButton = UIBarButtonItem(image: UIImage(resource: .navBackButton),
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(didTapBackButton))
-        backButton.tintColor = UIColor(resource: .ypBlackIOS)
         navigationItem.leftBarButtonItem = backButton
-    }
-    
-    private func setupProgressView() {
-        progressView = UIProgressView(progressViewStyle: .default)
-        progressView.progressTintColor = UIColor(resource: .ypBlackIOS)
-        progressView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(progressView)
     }
     

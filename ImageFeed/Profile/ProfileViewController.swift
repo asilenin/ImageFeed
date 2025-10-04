@@ -2,12 +2,56 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    
     private var avatarImage = UIImage()
-    private var avatarImageView = UIImageView()
-    private var logoutButton = UIButton()
-    private var nameLabel = UILabel()
-    private var loginNameLabel = UILabel()
-    private var descriptionLabel = UILabel()
+    
+    private lazy var avatarImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 35
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var logoutButton: UIButton = {
+        let button = UIButton(type: .custom)
+        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal)
+            ?? UIImage(systemName: "arrow.backward")
+            ?? UIImage()
+        button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        button.contentMode = .scaleToFill
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var nameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypWhiteIOS
+        label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
+        label.contentMode = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var loginNameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypGrayIOS
+        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.contentMode = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypWhiteIOS
+        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.contentMode = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
@@ -29,7 +73,7 @@ final class ProfileViewController: UIViewController {
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.updateAvatar()
             }
         
@@ -76,54 +120,9 @@ final class ProfileViewController: UIViewController {
     
     // SETUP UI OBJECTS:
     private func setupUIObjects() {
-        setupAvatarImageView()
-        setupLogoutButton()
-        setupNameLabel()
-        setupLoginNameLabel()
-        setupDescriptionLabel()
-    }
-    
-    private func setupAvatarImageView() {
-        avatarImageView.layer.masksToBounds = true
-        avatarImageView.layer.cornerRadius = 35
-        avatarImageView.contentMode = .scaleAspectFill
-        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(avatarImageView)
-    }
-    
-    private func setupLogoutButton() {
-        let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal) ?? UIImage(systemName: "arrow.backward") ?? UIImage()
-        logoutButton = UIButton(type: .custom)
-        logoutButton.setImage(image, for: .normal)
-        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        
-        logoutButton.contentMode = .scaleToFill
-        logoutButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(logoutButton)
-    }
-    
-    private func setupNameLabel() {
-        nameLabel.textColor = .ypWhiteIOS
-        nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
-        nameLabel.contentMode = .left
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(nameLabel)
-    }
-    
-    private func setupLoginNameLabel() {
-        loginNameLabel.textColor = .ypGrayIOS
-        loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        loginNameLabel.contentMode = .left
-        loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(loginNameLabel)
-    }
-    
-    private func setupDescriptionLabel() {
-        descriptionLabel.textColor = .ypWhiteIOS
-        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        descriptionLabel.contentMode = .left
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(descriptionLabel)
+        [avatarImageView, logoutButton, nameLabel, loginNameLabel, descriptionLabel].forEach {
+            view.addSubview($0)
+        }
     }
     
     // SETUP CONTRAINTS:
