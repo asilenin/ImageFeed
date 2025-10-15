@@ -10,6 +10,7 @@ enum WebViewConstants {
     static let unsplashProfileURLString2 = defaultBaseURL + "/me"
     static let unsplashProfileImageURLString = unsplashAPIURLString + "/users"
     static let unsplashProfileImageURLString2 = defaultBaseURL + "/users"
+    static let unsplashListOfPhotosURLString = defaultBaseURL + "/photos"
 }
 
 enum Constants {
@@ -25,6 +26,8 @@ enum Constants {
     static let accessScope = "public+read_user+write_likes"
     
     static let bearerToken = ""
+    
+    static let numberOfPhotosPerPage = 10
 }
 
 enum OtherConstants {
