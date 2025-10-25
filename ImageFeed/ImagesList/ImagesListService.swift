@@ -4,18 +4,18 @@ final class ImagesListService {
     
     static let shared = ImagesListService()
     
+    private(set) var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
+    private var lastLoadedPage: Int?
     private var task: URLSessionTask?
     
-    private var lastLoadedPage: Int?
-    private(set) var photos: [Photo] = []
     
     var isLoading = false
     
     func fetchPhotosNextPage(token: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
         guard !isLoading else {
-            print("❌  [fetchPhotosNextPage]: photos already fitching. stop request")
+            print("❌  [ImageListService][fetchPhotosNextPage]: photos already fitching. stop request")
             return
         }
         isLoading = true
@@ -24,7 +24,7 @@ final class ImagesListService {
         task?.cancel()
         guard let request = makeListOfPhotosRequest(page: nextPage, numberOfPhotos: Constants.numberOfPhotosPerPage) else {
             isLoading = false
-            print("❌ [fetchPhotosNextPage]: NetworkError - invalidURL")
+            print("❌ [ImageListService][fetchPhotosNextPage]: NetworkError - invalidURL")
             completion(.failure(NetworkError.invalidURL(message: "Неправильный URL")))
             return
         }
@@ -38,7 +38,7 @@ final class ImagesListService {
                 var photos: [Photo] = []
                 for photoResult in photoResults {
                     guard let imageURL = photoResult.urls.regular ?? photoResult.urls.full ?? photoResult.urls.raw ?? photoResult.urls.small ?? photoResult.urls.thumb else {
-                        print("❌ [fetchPhotosNextPage]: unable to fetch image URL")
+                        print("❌ [ImageListService][fetchPhotosNextPage]: unable to fetch image URL")
                         continue
                     }
                     let size = CGSize(width: photoResult.width, height: photoResult.height)
@@ -49,6 +49,7 @@ final class ImagesListService {
                         welcomeDescription: photoResult.description,
                         thumbImageURL: imageURL,
                         largeImageURL: imageURL,
+                        fullImageURL: imageURL,
                         isLiked: photoResult.likedByUser
                     )
                     photos.append(photo)
@@ -61,7 +62,7 @@ final class ImagesListService {
                 }
                 
             case .failure(let error):
-                print("❌ [fetchPhotosNextPage]: Error - \(error.localizedDescription)")
+                print("❌ [ImageListService][fetchPhotosNextPage]: Error - \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
@@ -71,7 +72,7 @@ final class ImagesListService {
     private func makeListOfPhotosRequest(page: Int, numberOfPhotos: Int =  Constants.numberOfPhotosPerPage) -> URLRequest? {
         let urlComponents = URLComponents(string: WebViewConstants.unsplashListOfPhotosURLString)
         guard var urlComponents else {
-            print("❌  [makeListOfPhotosRequest]: cannot create URL using WebViewConstants.unsplashListOfPhotosURLString")
+            print("❌  [ImageListService][makeListOfPhotosRequest]: cannot create URL using WebViewConstants.unsplashListOfPhotosURLString")
             assertionFailure("Failed to create URL")
             return nil
         }
@@ -81,7 +82,7 @@ final class ImagesListService {
         ]
         
         guard let url = urlComponents.url else {
-            print("❌  [makeListOfPhotosRequest]: unable to create URL from URLComponents")
+            print("❌  [ImageListService][makeListOfPhotosRequest]: unable to create URL from URLComponents")
             assertionFailure("Failed to create URL with components")
             return nil
         }
@@ -91,11 +92,72 @@ final class ImagesListService {
         if let token = OAuth2TokenStorage.shared.token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
-            print("❌  [makeListOfPhotosRequest]: token not found")
+            print("❌ [ImageListService][makeListOfPhotosRequest]: token not found")
             return nil
         }
         print("URLRequest URL: \(request.url?.absoluteString ?? "nil")")
         print("URLRequest HTTP Method: \(request.httpMethod ?? "GET")")
+        return request
+    }
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        task?.cancel()
+        guard let request = makeLikeRequest(photoId: photoId, isLike: isLike) else {
+            print("❌ [ImageListService][changeLike]: NetworkError - invalidURL")
+            completion(.failure(NetworkError.invalidURL(message: "❌ changeLike: NetworkError - invalidURL")))
+            return
+        }
+        task = URLSession.shared.data(for: request) { [weak self] (result: Result<LikePhotoResult, Error>) in
+            guard let self else { return }
+            self.task = nil
+            switch result {
+            case .success(_):
+                DispatchQueue.main.async {
+                    if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                        let photo = self.photos[index]
+                        let newPhoto = Photo(
+                            id: photo.id,
+                            size: photo.size,
+                            createdAt: photo.createdAt,
+                            welcomeDescription: photo.welcomeDescription,
+                            thumbImageURL: photo.thumbImageURL,
+                            largeImageURL: photo.largeImageURL,
+                            fullImageURL: photo.fullImageURL,
+                            isLiked: !photo.isLiked
+                        )
+                        self.photos[index] = newPhoto
+                        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
+                    }
+                    completion(.success(()))
+                }
+            case .failure(let error):
+                print("❌ [ImageListService][changeLike]: Error - \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
+        task?.resume()
+    }
+    
+    private func makeLikeRequest(photoId: String, isLike: Bool) -> URLRequest? {
+        guard let url = URL(string: "\(WebViewConstants.unsplashListOfPhotosURLString)/\(photoId)/like") else {
+            print("Ошибка: Не удалось создать URL из WebViewConstants.unsplashListOfPhotosURLString")
+            guard let newURL = URL(string: "https://api.unsplash.com/photos/\(photoId)/like") else {
+                assertionFailure("Failed to create new URL")
+                return URLRequest(url: URL(fileURLWithPath: ""))
+            }
+            return URLRequest(url: newURL)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
+        if let token = OAuth2TokenStorage.shared.token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        } else {
+            print("Токен не найден")
+            return nil
+        }
+        print("URLRequest URL: \(request.url?.absoluteString ?? "nil")")
+        print("URLRequest HTTP Method: \(String(describing: request.httpMethod))")
         return request
     }
 }
