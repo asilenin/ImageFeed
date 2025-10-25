@@ -73,4 +73,17 @@ final class ProfileImageService{
         print("URLRequest HTTP Method: \(request.httpMethod ?? "GET")")
         return request
     }
+    
+    func reset() {
+        task?.cancel()
+        task = nil
+        avatarURL = nil
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: ProfileImageService.didChangeNotification,
+                object: self,
+                userInfo: ["URL": ""]
+            )
+        }
+    }
 }

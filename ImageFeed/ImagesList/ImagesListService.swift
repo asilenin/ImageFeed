@@ -160,4 +160,13 @@ final class ImagesListService {
         print("URLRequest HTTP Method: \(String(describing: request.httpMethod))")
         return request
     }
+    
+    func reset() {
+        task?.cancel()
+        task = nil
+        photos.removeAll()
+        lastLoadedPage = nil
+        isLoading = false
+        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
+    }
 }
