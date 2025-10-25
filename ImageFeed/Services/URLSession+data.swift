@@ -18,14 +18,14 @@ extension URLSession {
         
         let task = dataTask(with: request, completionHandler: { data, response, error in
             if let error = error {
-                let message = "❌ [URLSessionTask]: URL request error: \(error.localizedDescription)"
+                let message = "❌ [URLSession][URLSessionTask]: URL request error: \(error.localizedDescription)"
                 print(message)
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                let message = "❌ [URLSessionTask]: Invalid URLSession response"
+                let message = "❌ [URLSession][URLSessionTask]: Invalid URLSession response"
                 print(message)
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
                 return
@@ -34,14 +34,14 @@ extension URLSession {
             let statusCode = httpResponse.statusCode
             
             guard (200..<300).contains(statusCode) else {
-                let message = "❌ [URLSessionTask]: HTTP error: status code \(statusCode)"
+                let message = "❌ [URLSession][URLSessionTask]: HTTP error: status code \(statusCode)"
                 print(message)
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 return
             }
             
             guard let data = data else {
-                let message = "❌ [URLSessionTask]: No data received"
+                let message = "❌ [URLSession][URLSessionTask]: No data received"
                 print("message \(message)")
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.noData(message: message)))
                 return
@@ -55,7 +55,7 @@ extension URLSession {
                 
                 
                 let dataString = String(data: data, encoding: .utf8) ?? "unable to get data as string"
-                let message = "❌ [URLSessionTask]: Decoding error: \(error.localizedDescription), data: \(dataString)"
+                let message = "❌ [URLSession][URLSessionTask]: Decoding error: \(error.localizedDescription), data: \(dataString)"
                 print(message)
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.decodingError(message: message)))
             }

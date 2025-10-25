@@ -39,7 +39,7 @@ final class ProfileLogoutService {
     
     private func switchToLogin() {
         guard let window = UIApplication.shared.windows.first else {
-            fatalError("Invalid Configuration")
+            fatalError("❌ [ProfileLogoutService][switchToLogin]Invalid Configuration")
         }
         window.rootViewController = SplashViewController()
         window.makeKeyAndVisible()

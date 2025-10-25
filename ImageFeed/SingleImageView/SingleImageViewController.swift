@@ -90,7 +90,7 @@ final class SingleImageViewController: UIViewController {
                 self.imageView.frame.size = image.size
                 self.rescaleAndCenterImageInScrollView(image: image)
             case .failure(let error):
-                print("❌ [SingleImageViewController] [loadImage] uable to load image: \(error)")
+                print("❌ [SingleImageViewController][loadImage] uable to load image: \(error)")
                 self.showError()
             }
         }

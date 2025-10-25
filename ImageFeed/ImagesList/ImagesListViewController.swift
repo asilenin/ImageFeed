@@ -37,7 +37,7 @@ final class ImagesListViewController: UIViewController {
         if let token = OAuth2TokenStorage.shared.token {
             imagesListService.fetchPhotosNextPage(token: token) { _ in }
         } else {
-            print("❌ No OAuth token found — cannot load photos.")
+            print("❌ [ImagesListViewController][viewDidLoad] No OAuth token found — cannot load photos.")
         }
     }
     
@@ -53,7 +53,7 @@ final class ImagesListViewController: UIViewController {
                 let viewController = segue.destination as? SingleImageViewController,
                 let indexPath = sender as? IndexPath
             else {
-                preconditionFailure("❌ [prepare]: Invalid segue destination")
+                preconditionFailure("❌ [ImagesListViewController][prepare]: Invalid segue destination")
             }
             let photo = photos[indexPath.row]
             viewController.imageURL = URL(string: photo.fullImageURL)
@@ -162,7 +162,7 @@ extension ImagesListViewController {
             if let token = OAuth2TokenStorage.shared.token {
                 imagesListService.fetchPhotosNextPage(token: token) { _ in }
             } else {
-                print("❌ No OAuth token found — cannot load photos.")
+                print("❌ [ImagesListViewController][tableView forRowAt]: No OAuth token found — cannot load photos.")
             }
         }
     }

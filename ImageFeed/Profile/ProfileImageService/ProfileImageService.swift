@@ -17,12 +17,11 @@ final class ProfileImageService{
         assert(Thread.isMainThread)
         task?.cancel()
         guard let request = makeProfileImageRequest(username: username) else {
-            let message = "❌ [fetchProfileImageURL]: Invalid URL"
+            let message = "❌ [ProfileImageService][fetchProfileImageURL]: Invalid URL"
             print(message)
             completion(.failure(NetworkError.invalidURL(message: message)))
             return
         }
-        print("request:  \(request)")
         task = URLSession.shared.data(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self else { return }
             self.task = nil
@@ -32,7 +31,7 @@ final class ProfileImageService{
                     let profileImage = userResult.profileImage,
                     let avatarURL = profileImage.large ?? profileImage.medium ?? profileImage.small
                 else {
-                    print("❌ [fetchProfileImageURL]: No valid profile image URL found")
+                    print("❌ [ProfileImageService][fetchProfileImageURL]: No valid profile image URL found")
                     return
                 }
 
@@ -45,7 +44,7 @@ final class ProfileImageService{
                 completion(.success(avatarURL))
 
             case .failure(let error):
-                print("❌ [fetchProfileImageURL]: \(error.localizedDescription)")
+                print("❌ [ProfileImageService][fetchProfileImageURL]: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
@@ -54,9 +53,9 @@ final class ProfileImageService{
     
     private func makeProfileImageRequest(username: String) -> URLRequest? {
         guard let url = URL(string: "\(WebViewConstants.unsplashProfileImageURLString2)/\(username)") else {
-            print("❌ [makeProfileImageRequest]: Unable to use WebViewConstants.unsplashProfileImageURLString to create URL")
+            print("❌ [ProfileImageService][makeProfileImageRequest]: Unable to use WebViewConstants.unsplashProfileImageURLString to create URL")
             guard let newURL = URL(string: "https://api.unsplash.com/users/\(username)") else {
-                assertionFailure("❌ [makeProfileImageRequest]: Failed to create new URL")
+                assertionFailure("❌ [ProfileImageService][makeProfileImageRequest]: Failed to create new URL")
                 return URLRequest(url: URL(fileURLWithPath: ""))
             }
             return URLRequest(url: newURL)
@@ -66,7 +65,7 @@ final class ProfileImageService{
         if let token = OAuth2TokenStorage.shared.token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         } else {
-            print("❌ [makeProfileImageRequest]: Token not found")
+            print("❌ [ProfileImageService][makeProfileImageRequest]: Token not found")
             return nil
         }
         print("URLRequest URL: \(request.url?.absoluteString ?? "nil")")
