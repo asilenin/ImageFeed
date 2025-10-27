@@ -51,4 +51,10 @@ final class ProfileService {
         print("URLRequest HTTP Method: \(request.httpMethod ?? "GET")")
         return request
     }
+    
+    func reset() {
+        task?.cancel()
+        task = nil
+        profile = nil
+    }
 }

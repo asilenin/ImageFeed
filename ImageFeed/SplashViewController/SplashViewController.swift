@@ -40,7 +40,7 @@ final class SplashViewController: UIViewController {
         guard let authViewController = storyboard.instantiateViewController(
             withIdentifier: "AuthViewController"
         ) as? AuthViewController else {
-            assertionFailure("❌ [presentAuthViewController]: unable find AuthViewController")
+            assertionFailure("❌ [SplashViewController][presentAuthViewController]: unable find AuthViewController")
             return
         }
 
@@ -51,7 +51,7 @@ final class SplashViewController: UIViewController {
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("❌ [switchToTabBarController]: Invalid window configuration")
+            assertionFailure("❌ [SplashViewController][switchToTabBarController]: Invalid window configuration")
             return
         }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
@@ -83,12 +83,12 @@ extension SplashViewController: AuthViewControllerDelegate {
 
             switch result {
             case .success(let profile):
-                print("✅ [fetchProfile]: Profile loaded: \(profile.name)")
+                print("✅ [SplashViewController][fetchProfile]: Profile loaded: \(profile.name)")
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
                 self.switchToTabBarController()
 
             case .failure(let error):
-                print("❌ [fetchProfile]: profile load failure: \(error.localizedDescription)")
+                print("❌ [SplashViewController][fetchProfile]: profile load failure: \(error.localizedDescription)")
                 break
             }
         }

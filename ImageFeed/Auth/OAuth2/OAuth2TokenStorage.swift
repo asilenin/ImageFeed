@@ -3,7 +3,6 @@ import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     static let shared = OAuth2TokenStorage()
-    //private let userDefaults = UserDefaults.standard
     private let keychainWrapper = KeychainWrapper.standard
     private let tokenKey = "OAuth2Token"
     
@@ -13,6 +12,7 @@ final class OAuth2TokenStorage {
         }
         set {
             guard let newValue = newValue else {
+                keychainWrapper.removeObject(forKey: Constants.bearerToken)
                 return
             }
             keychainWrapper.set(newValue, forKey: Constants.bearerToken)
