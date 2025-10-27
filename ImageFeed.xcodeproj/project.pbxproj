@@ -16,13 +16,16 @@
 /* Begin PBXFileReference section */
 		472FB42A2DDE36A900BD3E80 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		475370A52E051101009E701A /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		475F30362EAFADAB00B19127 /* Kingfisher */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Kingfisher; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/Kingfisher"; sourceTree = "<absolute>"; };
+		475F30372EAFADB500B19127 /* ProgressHUD */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProgressHUD; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/ProgressHUD"; sourceTree = "<absolute>"; };
+		475F30382EAFADB500B19127 /* SwiftKeychainWrapper */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftKeychainWrapper; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/SwiftKeychainWrapper"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		472FB43C2DDE36AA00BD3E80 /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 472FB4292DDE36A900BD3E80 /* ImageFeed */;
 		};
@@ -75,6 +78,9 @@
 			isa = PBXGroup;
 			children = (
 				475370A52E051101009E701A /* WebKit.framework */,
+				475F30362EAFADAB00B19127 /* Kingfisher */,
+				475F30372EAFADB500B19127 /* ProgressHUD */,
+				475F30382EAFADB500B19127 /* SwiftKeychainWrapper */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
