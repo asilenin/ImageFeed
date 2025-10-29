@@ -61,8 +61,9 @@ final class ImagesListService {
     }
     
     private func makeLikeRequest(photoId: String, isLike: Bool) -> URLRequest? {
-        guard let url = URL(string: "\(WebViewConstants.unsplashListOfPhotosURLString)/\(photoId)/like") else {
-            print("Ошибка: Не удалось создать URL из WebViewConstants.unsplashListOfPhotosURLString")
+        guard let url = URL(string: "\(AuthConfiguration.standard.unsplashListOfPhotosURLString)/\(photoId)/like") else {
+            print("Ошибка: Не удалось создать URL из AuthConfiguration.standard.unsplashListOfPhotosURLString")
+            print("Ошибка: Не удалось создать URL из AuthConfiguration.standard.unsplashListOfPhotosURLString")
             guard let newURL = URL(string: "https://api.unsplash.com/photos/\(photoId)/like") else {
                 assertionFailure("Failed to create new URL")
                 return URLRequest(url: URL(fileURLWithPath: ""))
@@ -95,7 +96,7 @@ extension ImagesListService{
         let nextPage = (lastLoadedPage ?? 0) + 1
         assert(Thread.isMainThread)
         task?.cancel()
-        guard let request = makeListOfPhotosRequest(page: nextPage, numberOfPhotos: Constants.numberOfPhotosPerPage) else {
+        guard let request = makeListOfPhotosRequest(page: nextPage, numberOfPhotos: OtherConstants.numberOfPhotosPerPage) else {
             isLoading = false
             print("❌ [ImageListService][fetchPhotosNextPage]: NetworkError - invalidURL")
             completion(.failure(NetworkError.invalidURL(message: "Неправильный URL")))
@@ -143,10 +144,10 @@ extension ImagesListService{
     }
     
     //MARK: - Private Methods
-    private func makeListOfPhotosRequest(page: Int, numberOfPhotos: Int =  Constants.numberOfPhotosPerPage) -> URLRequest? {
-        let urlComponents = URLComponents(string: WebViewConstants.unsplashListOfPhotosURLString)
+    private func makeListOfPhotosRequest(page: Int, numberOfPhotos: Int =  OtherConstants.numberOfPhotosPerPage) -> URLRequest? {
+        let urlComponents = URLComponents(string: AuthConfiguration.standard.unsplashListOfPhotosURLString)
         guard var urlComponents else {
-            print("❌  [ImageListService][makeListOfPhotosRequest]: cannot create URL using WebViewConstants.unsplashListOfPhotosURLString")
+            print("❌  [ImageListService][makeListOfPhotosRequest]: cannot create URL using AuthConfiguration.standard.unsplashListOfPhotosURLString")
             assertionFailure("Failed to create URL")
             return nil
         }

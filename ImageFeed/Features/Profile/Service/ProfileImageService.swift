@@ -71,8 +71,8 @@ extension ProfileImageService{
     
     // MARK: - Private Methods
     private func makeProfileImageRequest(username: String) -> URLRequest? {
-        guard let url = URL(string: "\(WebViewConstants.unsplashProfileImageURLString2)/\(username)") else {
-            print("❌ [ProfileImageService][makeProfileImageRequest]: Unable to use WebViewConstants.unsplashProfileImageURLString to create URL")
+        guard let url = URL(string: "\(AuthConfiguration.standard.unsplashProfileImageURLString)/\(username)") else {
+            print("❌ [ProfileImageService][makeProfileImageRequest]: Unable to use AuthConfiguration.standard.unsplashProfileImageURLString to create URL")
             guard let newURL = URL(string: "https://api.unsplash.com/users/\(username)") else {
                 assertionFailure("❌ [ProfileImageService][makeProfileImageRequest]: Failed to create new URL")
                 return URLRequest(url: URL(fileURLWithPath: ""))

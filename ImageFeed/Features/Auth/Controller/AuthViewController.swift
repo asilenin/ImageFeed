@@ -45,12 +45,21 @@ final class AuthViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == showWebViewSegueIdentifier,
-              let webViewViewController = segue.destination as? WebViewViewController
-        else {
-            return super.prepare(for: segue, sender: sender)
+        if segue.identifier == showWebViewSegueIdentifier {
+            guard
+                let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
+                return
+            }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
+            webViewViewController.delegate = self
+        } else {
+            super.prepare(for: segue, sender: sender)
         }
-        webViewViewController.delegate = self
     }
     
     // MARK: - Configuration
@@ -88,11 +97,22 @@ final class AuthViewController: UIViewController {
     // MARK: - Helpers
     @objc private func didTapLoginButton() {
         guard !isFetchingToken else { return }
+        
+        let webViewViewController = WebViewViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewViewController.presenter = webViewPresenter
+        webViewPresenter.view = webViewViewController
+        webViewViewController.delegate = self
+        webViewViewController.modalPresentationStyle = .fullScreen
+        present(webViewViewController, animated: true, completion: nil)
+        /*
         let webViewViewController = WebViewViewController()
         webViewViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: webViewViewController)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
+         */
     }
 }
 
