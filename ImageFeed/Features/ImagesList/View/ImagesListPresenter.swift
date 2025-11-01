@@ -41,7 +41,7 @@ final class ImageListPresenter: ImageListPresenterProtocol {
                 self.viewController?.present(alert, animated: true, completion: nil)
             }
             
-            UIBlockingProgressHUD.dismiss()
+            self.viewController?.showHUD()
         }
     }
     

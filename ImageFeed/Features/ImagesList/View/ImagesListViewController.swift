@@ -6,6 +6,9 @@ public protocol ImagesListViewControllerProtocol: AnyObject {
     func updateTableViewAnimated()
     func reloadRows(at indexPaths: [IndexPath])
     func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?)
+    
+    func showHUD()
+    func dismissHUD()
 }
 
 final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
@@ -101,6 +104,14 @@ extension ImagesListViewController {
         self.presenter = presenter
         self.presenter?.viewController = self
     }
+    
+    func showHUD() {
+        UIBlockingProgressHUD.show()
+    }
+
+    func dismissHUD() {
+        UIBlockingProgressHUD.dismiss()
+    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -130,7 +141,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         //let photo = photos[indexPath.row]
-        UIBlockingProgressHUD.show()
+        showHUD()
         print("Presenter is \(presenter == nil ? "nil" : "set")")
         presenter?.didTapLike(at: indexPath)
     }
