@@ -1,5 +1,4 @@
 import UIKit
-import WebKit
 
 protocol ProfilePresenterProtocol {
     var viewController: ProfileViewControllerProtocol? { get set }

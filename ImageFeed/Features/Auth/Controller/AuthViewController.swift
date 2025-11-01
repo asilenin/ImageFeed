@@ -107,13 +107,6 @@ final class AuthViewController: UIViewController {
         webViewViewController.delegate = self
         webViewViewController.modalPresentationStyle = .fullScreen
         present(webViewViewController, animated: true, completion: nil)
-        /*
-        let webViewViewController = WebViewViewController()
-        webViewViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: webViewViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true, completion: nil)
-         */
     }
 }
 

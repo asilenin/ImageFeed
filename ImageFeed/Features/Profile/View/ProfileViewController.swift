@@ -179,10 +179,10 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     func updateAvatar(url: URL?) {
         DispatchQueue.main.async {
             guard let url else {
-                self.avatarImageView.image = UIImage(named: "avatar")
+                self.avatarImageView.image = UIImage(named: "Userpic")
                 return
             }
-            let placeholder = UIImage(named: "avatar")
+            let placeholder = UIImage(named: "Userpic")
             let processor = RoundCornerImageProcessor(cornerRadius: 35)
             
             self.avatarImageView.kf.indicatorType = .activity

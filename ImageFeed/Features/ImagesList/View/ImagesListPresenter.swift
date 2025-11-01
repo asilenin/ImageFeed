@@ -1,5 +1,4 @@
 import UIKit
-import WebKit
 
 public protocol ImageListPresenterProtocol {
     var viewController: ImagesListViewControllerProtocol? { get set }

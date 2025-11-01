@@ -80,15 +80,3 @@ struct AuthConfiguration {
         )
     }
 }
-
-enum OtherConstants {
-    static let numberOfPhotosPerPage = 10
-    static let floatComparisonEpsilon: Double = 0.0001
-}
-
-enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case put = "PUT"
-    case delete = "DELETE"
-}

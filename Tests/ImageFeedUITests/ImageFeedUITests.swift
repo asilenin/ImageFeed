@@ -1,6 +1,6 @@
 import XCTest
 
-class Image_FeedUITests: XCTestCase {
+final class Image_FeedUITests: XCTestCase {
     private let app = XCUIApplication() // переменная приложения
     
     override func setUpWithError() throws {
@@ -12,21 +12,21 @@ class Image_FeedUITests: XCTestCase {
     func testAuth() throws {
         
         let authButton = app.buttons["Authenticate"]
-        //XCTAssertTrue(authButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(authButton.waitForExistence(timeout: 5))
         authButton.tap()
         
         let webView = app.webViews["UnsplashWebView"]
-        //XCTAssertTrue(webView.waitForExistence(timeout: 5))
+        XCTAssertTrue(webView.waitForExistence(timeout: 5))
 
         let loginTextField = webView.descendants(matching: .textField).element
-        //XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
         loginTextField.typeText("<Ваш e-mail>")
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
-        //XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
+        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
         passwordTextField.typeText("<Ваш пароль>")
@@ -37,7 +37,7 @@ class Image_FeedUITests: XCTestCase {
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         
-        //XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
     }
     
     func testFeed() throws {
