@@ -19,6 +19,7 @@ final class WebViewViewController: UIViewController  & WebViewViewControllerProt
         let webView = WKWebView()
         webView.contentMode = .scaleToFill
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }()
     

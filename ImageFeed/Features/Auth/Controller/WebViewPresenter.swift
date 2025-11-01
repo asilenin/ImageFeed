@@ -5,20 +5,26 @@ public protocol WebViewPresenterProtocol {
     func viewDidLoad()
     func didUpdateProgressValue(_ newValue: Double)
     func code(from url: URL) -> String?
-    var view: WebViewViewControllerProtocol? { get set }
+    var viewController: WebViewViewControllerProtocol? { get set }
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
-    weak var view: WebViewViewControllerProtocol?
+    // MARK: - Public Properties
     var authHelper: AuthHelperProtocol
     
     init(authHelper: AuthHelperProtocol) {
         self.authHelper = authHelper
     }
     
+    weak var viewController: WebViewViewControllerProtocol?
+    
+    // MARK: - Private Properties
+
+    
+    // MARK: - Public Methods
     func viewDidLoad() {
         guard let request = authHelper.authRequest() else { return }
-        view?.load(request: request)
+        viewController?.load(request: request)
         didUpdateProgressValue(0)
     }
 }
@@ -28,10 +34,10 @@ extension WebViewPresenter{
     // MARK: - Public Methods
     func didUpdateProgressValue(_ newValue: Double) {
         let newProgressValue = Float(newValue)
-        view?.setProgressValue(newProgressValue)
+        viewController?.setProgressValue(newProgressValue)
         
         let shouldHideProgress = shouldHideProgress(for: newProgressValue)
-        view?.setProgressHidden(shouldHideProgress)
+        viewController?.setProgressHidden(shouldHideProgress)
     }
     
     func shouldHideProgress(for value: Float) -> Bool {
@@ -40,37 +46,5 @@ extension WebViewPresenter{
     
     func code(from url: URL) -> String? {
         authHelper.code(from: url)
-    }
-    
-    /*
-     func code(from url: URL) -> String? {
-     if let urlComponents = URLComponents(string: url.absoluteString),
-     urlComponents.path == "/oauth/authorize/native",
-     let items = urlComponents.queryItems,
-     let codeItem = items.first(where: { $0.name == "code" })
-     {
-     return codeItem.value
-     } else {
-     return nil
-     }
-     }
-     */
-    
-    /*
-     
-     private func code(from navigationAction: WKNavigationAction) -> String? {
-     if
-     let url = navigationAction.request.url,
-     let urlComponents = URLComponents(string: url.absoluteString),
-     urlComponents.path == "/oauth/authorize/native",
-     let items = urlComponents.queryItems,
-     let codeItem = items.first(where: { $0.name == "code" })
-     {
-     return codeItem.value
-     } else {
-     return nil
-     }
-     }
-     */
-    
+    }    
 }

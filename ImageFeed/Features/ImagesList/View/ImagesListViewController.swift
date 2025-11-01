@@ -1,12 +1,23 @@
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+public protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImageListPresenterProtocol? { get set }
     
-    // MARK: - Properties
-    private var photos: [Photo] = []
+    func updateTableViewAnimated()
+    func reloadRows(at indexPaths: [IndexPath])
+    func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)?)
+}
+
+final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
+    
+    // MARK: - Public Properties
+    var presenter: ImageListPresenterProtocol?
+    var photos: [Photo] = []
+    
+    // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    var imagesObserver: NSObjectProtocol?
+    private var imagesObserver: NSObjectProtocol?
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -30,16 +41,14 @@ final class ImagesListViewController: UIViewController {
             object: imagesListService,
             queue: .main
         ) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.photos = self.imagesListService.photos
             self.tableView.reloadData()
         }
         
-        if let token = OAuth2TokenStorage.shared.token {
-            imagesListService.fetchPhotosNextPage(token: token) { _ in }
-        } else {
-            print("❌ [ImagesListViewController][viewDidLoad] No OAuth token found — cannot load photos.")
-        }
+        presenter?.viewDidLoad()
+        presenter?.initiateFetchPhotosNextPage()
+        
     }
     
     deinit {
@@ -64,7 +73,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     // MARK: - Helpers
-    private func updateTableViewAnimated() {
+    func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imagesListService.photos.count
         photos = imagesListService.photos
@@ -85,24 +94,12 @@ extension ImagesListViewController {
     
     // MARK: - Public Methods
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row + 1 == photos.count {
-            if let token = OAuth2TokenStorage.shared.token {
-                imagesListService.fetchPhotosNextPage(token: token) { _ in }
-            } else {
-                print("❌ [ImagesListViewController][tableView forRowAt]: No OAuth token found — cannot load photos.")
-            }
-        }
+        presenter?.cellDidEndDisplaying(at: indexPath)
     }
     
-    // MARK: - Private Methods
-    private func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data {
-                completion(UIImage(data: data))
-            } else {
-                completion(nil)
-            }
-        }.resume()
+    func configure(presenter: ImageListPresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.viewController = self
     }
 }
 
@@ -132,20 +129,13 @@ extension ImagesListViewController: ImagesListCellDelegate {
     // MARK: - Public Methods
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
+        //let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
-        switch result {
-        case .success:
-            self.photos = self.imagesListService.photos
-            cell.setIsLiked(self.photos[indexPath.row].isLiked)
-            UIBlockingProgressHUD.dismiss()
-        case .failure:
-           UIBlockingProgressHUD.dismiss()
-           // Покажем, что что-то пошло не так
-           // TODO: Показать ошибку с использованием UIAlertController
-           }
-        }
+        print("Presenter is \(presenter == nil ? "nil" : "set")")
+        presenter?.didTapLike(at: indexPath)
+    }
+    func reloadRows(at indexPaths: [IndexPath]) {
+        tableView.reloadRows(at: indexPaths, with: .automatic)
     }
 }
 

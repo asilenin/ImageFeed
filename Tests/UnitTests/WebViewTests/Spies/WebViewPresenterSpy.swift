@@ -8,7 +8,7 @@ final class WebViewPresenterSpy: WebViewPresenterProtocol {
     
     var loadRequestCalled = false
     
-    var view: WebViewViewControllerProtocol?
+    var viewController: WebViewViewControllerProtocol?
     
     func viewDidLoad() {
         viewDidLoadCalled = true

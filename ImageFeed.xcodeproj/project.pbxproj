@@ -51,9 +51,6 @@
 		473B16252EB28DB100219D7D /* ProfileViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProfileViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		473B16322EB28DCC00219D7D /* ImageListViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageListViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		475370A52E051101009E701A /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		475F30362EAFADAB00B19127 /* Kingfisher */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Kingfisher; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/Kingfisher"; sourceTree = "<absolute>"; };
-		475F30372EAFADB500B19127 /* ProgressHUD */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProgressHUD; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/ProgressHUD"; sourceTree = "<absolute>"; };
-		475F30382EAFADB500B19127 /* SwiftKeychainWrapper */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftKeychainWrapper; path = "/Users/antonsilenin/Library/Developer/Xcode/DerivedData/ImageFeed-cyvavetsczinygfvpuljxgopntif/SourcePackages/checkouts/SwiftKeychainWrapper"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -185,9 +182,6 @@
 			isa = PBXGroup;
 			children = (
 				475370A52E051101009E701A /* WebKit.framework */,
-				475F30362EAFADAB00B19127 /* Kingfisher */,
-				475F30372EAFADB500B19127 /* ProgressHUD */,
-				475F30382EAFADB500B19127 /* SwiftKeychainWrapper */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

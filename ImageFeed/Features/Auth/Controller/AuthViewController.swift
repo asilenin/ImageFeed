@@ -23,6 +23,7 @@ final class AuthViewController: UIViewController {
     
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
+        button.accessibilityIdentifier = "Authenticate"
         button.setTitle("Войти", for: .normal)
         button.titleLabel?.font = UIConstants.loginButtonFont
         button.setTitleColor(UIColor(resource: .ypBlackIOS), for: .normal)
@@ -55,7 +56,7 @@ final class AuthViewController: UIViewController {
             let authHelper = AuthHelper()
             let webViewPresenter = WebViewPresenter(authHelper: authHelper)
             webViewViewController.presenter = webViewPresenter
-            webViewPresenter.view = webViewViewController
+            webViewPresenter.viewController = webViewViewController
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -102,7 +103,7 @@ final class AuthViewController: UIViewController {
         let authHelper = AuthHelper()
         let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         webViewViewController.presenter = webViewPresenter
-        webViewPresenter.view = webViewViewController
+        webViewPresenter.viewController = webViewViewController
         webViewViewController.delegate = self
         webViewViewController.modalPresentationStyle = .fullScreen
         present(webViewViewController, animated: true, completion: nil)
