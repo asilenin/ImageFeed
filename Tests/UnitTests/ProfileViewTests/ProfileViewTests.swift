@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import XCTest
 @testable import ImageFeed
 
@@ -62,21 +61,4 @@ final class ProfileViewTests: XCTestCase {
         //then
         XCTAssertEqual(viewController.avatarURL, testURL)
     }
-=======
-//
-//  ProfileViewTests.swift
-//  ProfileViewTests
-//
-//  Created by Anton Silenin on 29.10.2025.
-//
-
-import Testing
-
-struct ProfileViewTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
-
->>>>>>> 4b3032bbb48d5da78c55589d9f3e4782f707e8c7
 }
