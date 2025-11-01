@@ -24,5 +24,12 @@ final class ImagesListViewControllerSpy: ImagesListViewControllerProtocol {
     func configure(presenter: ImageListPresenterProtocol) {
         self.presenter = presenter
     }
+    
+    
+    func showHUD() {
+    }
+
+    func dismissHUD() {
+    }
 }
 

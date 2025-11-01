@@ -3,6 +3,7 @@ import XCTest
 final class Image_FeedUITests: XCTestCase {
     private let app = XCUIApplication() // переменная приложения
     
+    //key to skip auth test to keep limits of 
     var ifRunAuthTest = false
     
     override func setUpWithError() throws {
@@ -50,17 +51,16 @@ final class Image_FeedUITests: XCTestCase {
             // center-tap helps when element is partially covered
             let center = passwordTextField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
             center.tap()
-            sleep(1)
+            XCTAssertTrue(passwordTextField.waitForExistence(timeout: 1))
+            
         } else {
             passwordTextField.tap()
-            sleep(1)
+            XCTAssertTrue(passwordTextField.waitForExistence(timeout: 1))
         }
 
-        // As an additional fallback if keyboard still hasn't appeared
         if app.keyboards.count == 0 {
-            // tap some blank area of the web view to defocus/re-focus
             webView.tap()
-            sleep(1)
+            XCTAssertTrue(webView.waitForExistence(timeout: 1))
         }
 
         passwordTextField.typeText(ImageFeedUITestsConstants.passwordTextData)
@@ -78,28 +78,30 @@ final class Image_FeedUITests: XCTestCase {
     func testFeed() throws {
         let tablesQuery = app.tables
         
+        let firstCell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         sleep(10)
-        
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        cell.swipeUp()
-        
-        sleep(2)
+        firstCell.swipeUp()
         
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
-        
-        cellToLike.buttons["like button off"].tap()
-        
+
+        let likeButtonOff = cellToLike.buttons["like button off"]
+        let likeButtonOn = cellToLike.buttons["like button on"]
+
+        // Wait for one of the buttons to appear
+        let buttonToTap = likeButtonOff.exists ? likeButtonOff : likeButtonOn
         sleep(5)
-        
-        cellToLike.buttons["like button on"].tap()
-        
-        sleep(2)
+        buttonToTap.tap()
+
+        // Wait for the alternate button to appear after state change
+        let alternateButton = (buttonToTap == likeButtonOff ? likeButtonOn : likeButtonOff)
+        sleep(5)
+        alternateButton.tap()
         
         cellToLike.tap()
         
-        sleep(2)
-        
         let image = app.scrollViews.images.element(boundBy: 0)
+        XCTAssertTrue(image.waitForExistence(timeout: 5))
+        
         // Zoom in
         image.pinch(withScale: 3, velocity: 1) // zoom in
         // Zoom out
@@ -110,13 +112,17 @@ final class Image_FeedUITests: XCTestCase {
     }
     
     func testProfile() throws {
-        sleep(3)
-        app.tabBars.buttons.element(boundBy: 1).tap()
+        let profileTab = app.tabBars.buttons.element(boundBy: 1)
+        XCTAssertTrue(profileTab.waitForExistence(timeout: 5))
+        profileTab.tap()
        
         XCTAssertTrue(app.staticTexts[ImageFeedUITestsConstants.userNameTextData].exists)
         
         app.buttons["Logout"].tap()
         
-        app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
+        let yesButton = app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"]
+        XCTAssertTrue(yesButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(yesButton.isHittable)
+        yesButton.tap()
     }
 }

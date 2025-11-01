@@ -29,6 +29,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private lazy var logoutButton: UIButton = {
         let button = UIButton(type: .custom)
+        button.accessibilityIdentifier = "Logout"
         let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal)
             ?? UIImage(systemName: "arrow.backward")
             ?? UIImage()
