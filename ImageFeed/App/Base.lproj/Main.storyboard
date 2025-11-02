@@ -207,6 +207,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XAK-yW-c4Y">
                                 <rect key="frame" x="8" y="56" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="singleImageViewBackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="WWc-DG-g0J"/>
                                     <constraint firstAttribute="width" constant="48" id="rMz-We-7hg"/>

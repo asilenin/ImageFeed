@@ -47,8 +47,8 @@ extension ProfileService{
     
     // MARK: - Private Methods
     private func makeProfileRequest() -> URLRequest? {
-        guard let url = URL(string: WebViewConstants.unsplashProfileURLString2) else {
-            print("❌ [makeProfileRequest]: Unable to create URL using WebViewConstants.unsplashProfileURLString")
+        guard let url = URL(string: AuthConfiguration.standard.unsplashProfileURLString) else {
+            print("❌ [makeProfileRequest]: Unable to create URL using AuthConfiguration.standard.unsplashProfileURLString")
             guard let newURL = URL(string: "https://api.unsplash.com/me") else {
                 assertionFailure("❌ [makeProfileRequest]:Failed to create new URL")
                 return URLRequest(url: URL(fileURLWithPath: ""))

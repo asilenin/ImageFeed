@@ -1,7 +1,16 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol? { get set }
+    func updateProfileDetails(profile: Profile)
+    func updateAvatar(url: URL?)
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol{
+    
+    // MARK: - Properties
+    var presenter: ProfilePresenterProtocol?
     
     // MARK: - Properties
     private var profileImageServiceObserver: NSObjectProtocol?
@@ -20,6 +29,7 @@ final class ProfileViewController: UIViewController {
     
     private lazy var logoutButton: UIButton = {
         let button = UIButton(type: .custom)
+        button.accessibilityIdentifier = "Logout"
         let image = UIImage(named: "logout")?.withRenderingMode(.alwaysOriginal)
             ?? UIImage(systemName: "arrow.backward")
             ?? UIImage()
@@ -60,6 +70,7 @@ final class ProfileViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.viewDidLoad()
         setupView()
         setupUIObjects()
         setupConstraints()
@@ -75,9 +86,9 @@ final class ProfileViewController: UIViewController {
                 queue: .main
             ) { [weak self] _ in
                 guard let self else { return }
-                self.updateAvatar()
+                presenter?.updateAvatar()
             }
-        self.updateAvatar()
+        presenter?.updateAvatar()
     }
     
     deinit {
@@ -87,6 +98,12 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Configuration
+    
+    func configure(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.viewController = self
+    }
+    
     private func setupView() {
         view.contentMode = .scaleToFill
         view.backgroundColor = UIColor(resource: .ypBlackIOS)
@@ -151,34 +168,38 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    // MARK: - Lifecycle
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { avatarImageView.image = UIImage(named: "avatar")
-            return }
-        
-        let placeholder = UIImage(named: "avatar")
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
-        
-        avatarImageView.kf.indicatorType = .activity
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: placeholder,
-            options: [
-                .processor(processor),
-                .scaleFactor(UIScreen.main.scale),
-                .cacheOriginalImage
-            ]
-        )
+    // MARK: - Public Methods
+    func updateProfileDetails(profile: Profile) {
+        DispatchQueue.main.async {
+            self.nameLabel.text = profile.name
+            self.loginNameLabel.text = profile.loginName
+            self.descriptionLabel.text = profile.bio
+        }
     }
     
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        loginNameLabel.text = profile.loginName
-        descriptionLabel.text = profile.bio
+    func updateAvatar(url: URL?) {
+        DispatchQueue.main.async {
+            guard let url else {
+                self.avatarImageView.image = UIImage(named: "Userpic")
+                return
+            }
+            let placeholder = UIImage(named: "Userpic")
+            let processor = RoundCornerImageProcessor(cornerRadius: 35)
+            
+            self.avatarImageView.kf.indicatorType = .activity
+            self.avatarImageView.kf.setImage(
+                with: url,
+                placeholder: placeholder,
+                options: [
+                    .processor(processor),
+                    .scaleFactor(UIScreen.main.scale),
+                    .cacheOriginalImage
+                ]
+            )
+        }
     }
-
+    
+    // MARK: - Private Methods
     @objc private func didTapLogoutButton(){
         let alert = UIAlertController(
             title: "Пока, пока!",

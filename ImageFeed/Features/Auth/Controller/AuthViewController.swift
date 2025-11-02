@@ -23,6 +23,7 @@ final class AuthViewController: UIViewController {
     
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
+        button.accessibilityIdentifier = "Authenticate"
         button.setTitle("Войти", for: .normal)
         button.titleLabel?.font = UIConstants.loginButtonFont
         button.setTitleColor(UIColor(resource: .ypBlackIOS), for: .normal)
@@ -45,12 +46,21 @@ final class AuthViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard segue.identifier == showWebViewSegueIdentifier,
-              let webViewViewController = segue.destination as? WebViewViewController
-        else {
-            return super.prepare(for: segue, sender: sender)
+        if segue.identifier == showWebViewSegueIdentifier {
+            guard
+                let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
+                return
+            }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.viewController = webViewViewController
+            webViewViewController.delegate = self
+        } else {
+            super.prepare(for: segue, sender: sender)
         }
-        webViewViewController.delegate = self
     }
     
     // MARK: - Configuration
@@ -88,11 +98,15 @@ final class AuthViewController: UIViewController {
     // MARK: - Helpers
     @objc private func didTapLoginButton() {
         guard !isFetchingToken else { return }
+        
         let webViewViewController = WebViewViewController()
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewViewController.presenter = webViewPresenter
+        webViewPresenter.viewController = webViewViewController
         webViewViewController.delegate = self
-        let navigationController = UINavigationController(rootViewController: webViewViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true, completion: nil)
+        webViewViewController.modalPresentationStyle = .fullScreen
+        present(webViewViewController, animated: true, completion: nil)
     }
 }
 
