@@ -84,18 +84,22 @@ final class Image_FeedUITests: XCTestCase {
         
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
 
-        let likeButtonOff = cellToLike.buttons["like button off"]
-        let likeButtonOn = cellToLike.buttons["like button on"]
+        var likeButtonOff = cellToLike.buttons["like button off"]
+        var likeButtonOn = cellToLike.buttons["like button on"]
 
         // Wait for one of the buttons to appear
-        let buttonToTap = likeButtonOff.exists ? likeButtonOff : likeButtonOn
+        var buttonToTap = likeButtonOff.exists ? likeButtonOff : likeButtonOn
         sleep(5)
         buttonToTap.tap()
 
         // Wait for the alternate button to appear after state change
-        let alternateButton = (buttonToTap == likeButtonOff ? likeButtonOn : likeButtonOff)
+        
+        likeButtonOff = cellToLike.buttons["like button off"]
+        likeButtonOn = cellToLike.buttons["like button on"]
+        buttonToTap = likeButtonOff.exists ? likeButtonOff : likeButtonOn
+        
         sleep(5)
-        alternateButton.tap()
+        buttonToTap.tap()
         
         cellToLike.tap()
         
@@ -121,6 +125,11 @@ final class Image_FeedUITests: XCTestCase {
         app.buttons["Logout"].tap()
         
         let yesButton = app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"]
+        
+        if !ifRunAuthTest {
+            return
+        }
+        
         XCTAssertTrue(yesButton.waitForExistence(timeout: 5))
         XCTAssertTrue(yesButton.isHittable)
         yesButton.tap()

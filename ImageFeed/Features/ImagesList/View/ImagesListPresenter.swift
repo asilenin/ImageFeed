@@ -41,7 +41,7 @@ final class ImageListPresenter: ImageListPresenterProtocol {
                 self.viewController?.present(alert, animated: true, completion: nil)
             }
             
-            self.viewController?.showHUD()
+            self.viewController?.dismissHUD()
         }
     }
     
